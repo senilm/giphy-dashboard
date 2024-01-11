@@ -1,0 +1,125 @@
+
+for finding top 5 search terms of all time 
+[
+  {
+    $group: {
+      _id: "$searchTermId",
+      count:{
+        $sum:1
+      }
+
+    }
+  },
+  {
+  $sort: {
+      count: -1
+    }
+  },
+  {
+    $limit: 5
+  }
+]
+
+
+
+wrote  this query in the Search model and got the SearchTerm object also from different table and got the first value from the array.
+[
+  {
+    $lookup: {
+      from: "SearchTerm",
+      localField: "searchTermId",
+      foreignField: "_id",
+      as: "searchTerm"
+    }
+  },
+  {
+    $addFields: {
+      Term: {
+        $first:"$searchTerm"
+      }
+    }
+  }
+]
+
+
+got the active users from last 30 days
+[
+  {
+    $match: {
+      createdAt: {
+        $gte: new Date(
+          Date.now() - 30 * 24 * 60 * 60 * 1000
+        ),
+      },
+    },
+  },
+  {
+    $lookup: {
+      from: "User",
+      localField: "userId",
+      foreignField: "_id",
+      as: "userDetail",
+    },
+  },
+  {
+    $addFields: {
+      userDetail: {
+        $first: "$userDetail",
+      },
+    },
+  },
+  {
+    $group: {
+      _id: "$userDetail.email",
+    },
+  },
+  {
+    $lookup: {
+      from: "User",
+      localField: "_id",
+      foreignField: "email",
+      as: "userData",
+    },
+  },
+  {
+    $addFields: {
+      userData: {
+        $first: "$userData",
+      },
+    },
+  },
+]
+
+
+
+To get most liked gifs of all time
+[
+  {
+    $group: {
+      _id: "$gifId",
+      likes:{
+        $sum:1
+      }
+    }
+  },
+  {
+    $sort: {
+      likes: -1
+    }
+  },
+  {
+  $lookup: {
+    from: "Gif",
+    localField: "_id",
+    foreignField: "_id",
+    as: "GifDetail"
+  }
+  },{
+    $addFields: {
+      GifDetail: {
+        $first:"$GifDetail"
+      }
+    }
+  }
+  
+]

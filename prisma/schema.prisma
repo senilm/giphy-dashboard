@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  username  String
+  email     String @unique
+  createdAt DateTime  @default(now())
+  Login     Login[]
+  GifLike   GifLike[]
+  Search    Search[]
+}
+
+model Login {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+}
+
+// Gif model
+model Gif {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  url       String
+  gifyId    String @unique
+  createdAt DateTime  @default(now())
+  GifLike   GifLike[]
+}
+
+model GifLike {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  gif       Gif      @relation(fields: [gifId], references: [id])
+  gifId     String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@unique([userId,gifId],name: "giflikeid")
+}
+
+// SearchTerm model
+model SearchTerm {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  keyword   String  @unique
+  createdAt DateTime @default(now())
+  Search    Search[]
+}
+
+model Search {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  searchTerm   SearchTerm @relation(fields: [searchTermId], references: [id])
+  searchTermId String     @db.ObjectId
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String     @db.ObjectId
+  createdAt    DateTime   @default(now())
+}
