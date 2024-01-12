@@ -1,0 +1,243 @@
+for daily data
+[
+  {
+    $match: {
+      createdAt: {
+        $gte: ISODate("2023-01-01T00:00:00.000Z"),
+        $lte: ISODate("2024-01-10T10:30:00.000Z"),
+      },
+    },
+  },
+  {
+    $group: {
+      _id: {
+        day: {
+          $dayOfMonth: "$createdAt",
+        },
+        month: {
+          $month: "$createdAt",
+        },
+        year: {
+          $year: "$createdAt",
+        },
+        searchTermId: "$searchTermId",
+      },
+      count: {
+        $sum: 1,
+      },
+    },
+  },
+  {
+    $project: {
+      _id: 0,
+      searchTermId: "$_id.searchTermId",
+      date: {
+        $dateFromParts: {
+          year: "$_id.year",
+          month: "$_id.month",
+          day: "$_id.day",
+        },
+      },
+      count: 1,
+    },
+  },
+  {
+    $sort: {
+      count: -1,
+    },
+  },
+  {
+    $lookup: {
+      from: "SearchTerm",
+      localField: "searchTermId",
+      foreignField: "_id",
+      as: "SearchTermData",
+    },
+  },
+  {
+    $addFields: {
+      SearchTermData: {
+        $first: "$SearchTermData",
+      },
+    },
+  },
+  {
+    $group: {
+      _id: "$date",
+      searchTerms: {
+        $push: {
+          termdata: "$SearchTermData",
+          count: "$count",
+        },
+      },
+    },
+  },
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        _id: 1,
+      },
+  },
+]
+
+
+for weekly data
+
+[
+  {
+    $match: {
+      createdAt: {
+        $gte: ISODate("2023-01-01T00:00:00.000Z"),
+        $lte: ISODate("2024-01-10T10:30:00.000Z"),
+      },
+    },
+  },
+  {
+    $group: {
+      _id: {
+        week: {
+          $isoWeek: "$createdAt",
+        },
+        year: {
+          $isoWeekYear: "$createdAt",
+        },
+        searchTermId: "$searchTermId",
+      },
+      count: {
+        $sum: 1,
+      },
+    },
+  },
+  {
+    $project: {
+      _id: 0,
+      searchTermId: "$_id.searchTermId",
+      weekStartDate: {
+        $dateFromParts: {
+          isoWeekYear: "$_id.year",
+          isoWeek: "$_id.week",
+        },
+      },
+      count: 1,
+    },
+  },
+  {
+    $sort: {
+      count: -1,
+    },
+  },
+  {
+    $lookup: {
+      from: "SearchTerm",
+      localField: "searchTermId",
+      foreignField: "_id",
+      as: "SearchTermData",
+    },
+  },
+  {
+    $addFields: {
+      SearchTermData: {
+        $first: "$SearchTermData",
+      },
+    },
+  },
+  {
+    $group: {
+      _id: "$weekStartDate",
+      searchTerms: {
+        $push: {
+          termdata: "$SearchTermData",
+          count: "$count",
+        },
+      },
+    },
+  },
+  {
+    $sort: {
+      _id: 1,
+    },
+  }
+]
+
+
+for monthly data
+[
+  {
+    $match: {
+      createdAt: {
+        $gte: ISODate("2023-01-01T00:00:00.000Z"),
+        $lte: ISODate("2024-01-10T10:30:00.000Z"),
+      },
+    },
+  },
+  {
+    $group: {
+      _id: {
+        month: {
+          $month: "$createdAt",
+        },
+        year: {
+          $year: "$createdAt",
+        },
+        searchTermId: "$searchTermId",
+      },
+      count: {
+        $sum: 1,
+      },
+    },
+  },
+  {
+    $project: {
+      _id: 0,
+      searchTermId: "$_id.searchTermId",
+      monthStartDate: {
+        $dateFromParts: {
+          year: "$_id.year",
+          month: "$_id.month",
+          day: 1, // Set day to 1 to get the start of the month
+        },
+      },
+      count: 1,
+    },
+  },
+  {
+    $sort: {
+      count: -1,
+    },
+  },
+  {
+    $lookup: {
+      from: "SearchTerm",
+      localField: "searchTermId",
+      foreignField: "_id",
+      as: "SearchTermData",
+    },
+  },
+  {
+    $addFields: {
+      SearchTermData: {
+        $first: "$SearchTermData",
+      },
+    },
+  },
+  {
+    $group: {
+      _id: "$monthStartDate",
+      searchTerms: {
+        $push: {
+          termdata: "$SearchTermData",
+          count: "$count",
+        },
+      },
+    },
+  },
+  {
+    $sort: {
+      _id: 1,
+    },
+  }
+]
+
