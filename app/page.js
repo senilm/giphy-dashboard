@@ -13,7 +13,7 @@ export default function Home() {
    <div className='flex border-white shadow-md p-3 rounded-[2rem] bg-white border-2'>
     <div className=' flex-col gap-4 px-10'>
       <div className=' gap-4 flex mb-2'>
-      Dates:
+      Filter date:
         <input type='date' placeholder='start' className=' border-b' value={startDate} onChange={(e)=>setStartDate(e.target.value)}></input>
         <span>To </span>
         <input type='date' value={endDate} placeholder='end' className='border-b' onChange={(e)=>setEndDate(e.target.value)}></input>
