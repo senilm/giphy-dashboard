@@ -60,7 +60,7 @@ const SearchTerm = ({ startDate, endDate }) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://giphy-dashboard.vercel.app/api/searchTerm/${type}`,
+          `http://localhost:3000/api/searchTerm/${type}`,
           {
             method: "POST",
             body: JSON.stringify({ startDate, endDate }),
