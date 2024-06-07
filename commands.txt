@@ -1,0 +1,6 @@
+docker compose up --build
+docker-compose down --volumes
+docker build -t test
+docker run -p 3000:3000 -t test
+
+
