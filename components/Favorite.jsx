@@ -46,7 +46,7 @@ const Favorite = ({startDate,endDate}) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://giphy-dashboard.vercel.app/api/favorite/${type}`,{
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/favorite/${type}`,{
             method:'POST',
             body:JSON.stringify({startDate,endDate})
           }
@@ -80,13 +80,13 @@ const Favorite = ({startDate,endDate}) => {
 
   return (
     <div className="flex">
-      <div className="border-2 border-white shadow-md rounded-[20px] px-6">
+      <div className="border-1 shadow-md mb-3 rounded-[20px]  px-6">
       <div className="flex justify-end mt-1">
         <Button label={'Daily'} onClickHandler={()=>onClickHandler('daily')}/>
         <Button label={'Weekly'} onClickHandler={()=>onClickHandler('weekly')}/>
         <Button label={'Monthly'} onClickHandler={()=>onClickHandler('monthly')}/>
       </div>
-        <Bar options={options} data={data} width={450} height={200}/>
+        <Bar options={options} data={data} width={1120} height={400}/>
       </div>
       
     </div>

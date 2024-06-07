@@ -60,14 +60,13 @@ const SearchTerm = ({ startDate, endDate }) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://giphy-dashboard.vercel.app/api/searchTerm/${type}`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/searchTerm/${type}`,
           {
             method: "POST",
             body: JSON.stringify({ startDate, endDate }),
           }
         );
         const data = await response.json();
-        console.log(data);
         setSearchTermData(data);
       } catch (error) {
         console.log(error);
@@ -105,17 +104,14 @@ const SearchTerm = ({ startDate, endDate }) => {
     });
   }
 
-  // console.log(searchTermData[0]?.searchTerms[0].termdata.keyword);
-  // console.log(searchTermData[2]?.searchTerms[0].termdata.keyword);
-
   const data = {
     labels,
     datasets: datasets,
   };
 
   return (
-    <div className="flex">
-      <div className="border-2 border-white shadow-lg mb-3 rounded-[20px] py-4 px-6">
+    <div className="flex ">
+      <div className="border-1 shadow-md mb-3 rounded-[20px]  px-6">
         <div className="flex justify-end mt-1">
           <Button
             label={"Daily"}
@@ -130,7 +126,7 @@ const SearchTerm = ({ startDate, endDate }) => {
             onClickHandler={() => onClickHandler("monthly")}
           />
         </div>
-        <Bar options={options} data={data} width={500} height={400} />
+        <Bar options={options} data={data} className="w-full" width={1200} height={400} />
       </div>
     </div>
   );

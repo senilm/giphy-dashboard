@@ -44,7 +44,7 @@ const Logins = ({ startDate, endDate }) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://giphy-dashboard.vercel.app/api/logins/${type}`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/logins/${type}`,
           {
             method: "POST",
             body: JSON.stringify({ startDate, endDate }),
@@ -52,7 +52,6 @@ const Logins = ({ startDate, endDate }) => {
         );
         const data = await response.json();
         setLoginData(data);
-        // console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -79,7 +78,7 @@ const Logins = ({ startDate, endDate }) => {
   };
   return (
     <div className="flex">
-      <div className="border-2 border-white shadow-lg rounded-[20px] mt-[2.1rem] px-6">
+      <div className="border-1 shadow-md mb-3 rounded-[20px]  px-6">
         <div className="flex justify-end mt-1">
         <Button
           label={"Daily"}
@@ -94,7 +93,7 @@ const Logins = ({ startDate, endDate }) => {
           onClickHandler={() => handleButtonClick("monthly")}
         />
       </div>
-        <Bar options={options} data={data} width={450} height={200} />
+        <Bar options={options} data={data} width={1120} height={400} />
       </div>
       
     </div>
